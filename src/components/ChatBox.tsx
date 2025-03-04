@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useCallback } from "react";
 import dynamic from 'next/dynamic';
 
-// Tách form thành component riêng
+// Separate form component for better code splitting
 const ChatForm = dynamic(() => Promise.resolve(({ 
   onSubmit, 
   author, 
@@ -22,7 +22,7 @@ const ChatForm = dynamic(() => Promise.resolve(({
   <form onSubmit={onSubmit} className="p-2 sm:p-4 border-t">
     <input
       type="text"
-      placeholder="Nhập tên của bạn"
+      placeholder="Enter your name"
       value={author}
       onChange={(e) => setAuthor(e.target.value)}
       className="w-full text-black mb-2 px-2 sm:px-3 py-2 border rounded text-sm sm:text-base"
@@ -31,7 +31,7 @@ const ChatForm = dynamic(() => Promise.resolve(({
     <div className="flex gap-2">
       <input
         type="text"
-        placeholder="Nhập tin nhắn..."
+        placeholder="Type your message..."
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
         className="flex-1 text-black px-2 sm:px-3 py-2 border rounded text-sm sm:text-base"
@@ -41,7 +41,7 @@ const ChatForm = dynamic(() => Promise.resolve(({
         type="submit"
         className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded hover:bg-purple-700 text-sm sm:text-base"
       >
-        Gửi
+        Send
       </button>
     </div>
   </form>
@@ -112,7 +112,7 @@ export default function ChatBox() {
         return;
       }
 
-      // Combine and format messages
+      // Combine and sort messages by creation time
       const combinedMessages: CombinedMessage[] = [
         ...(chatData?.map(chat => ({
           ...chat,
@@ -132,7 +132,7 @@ export default function ChatBox() {
 
     fetchAllMessages();
 
-    // Tạo một kênh duy nhất cho cả hai loại tin nhắn
+    // Create a single channel for both message types
     const channel = supabase.channel('combined_messages');
 
     // Subscribe to chat messages
@@ -199,23 +199,19 @@ export default function ChatBox() {
       ]);
 
       if (error) {
-        if (error.code === '42501') {
-          alert('Bạn đang gửi tin nhắn quá nhanh. Vui lòng đợi 30 giây!');
-          return;
-        }
         throw error;
       }
       setNewMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Không thể gửi tin nhắn. Vui lòng thử lại!");
+      alert("Cannot send message. Please try again!");
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-[calc(100vh-20rem)] lg:h-[500px]">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-[calc(100vh-20rem)] lg:h-[700px]">
       <div className="p-2 sm:p-4 bg-purple-600 text-white font-semibold">
-        Tin nhắn & Lời chúc
+        Messages & Greetings
       </div>
 
       <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
@@ -232,7 +228,7 @@ export default function ChatBox() {
                 {msg.author}
                 {isGrid && (
                   <span className="text-xs sm:text-sm text-purple-400 ml-2">
-                    đã gửi lời chúc tại ô ({msg.row}, {msg.col})
+                    sent a greeting at ({msg.row}, {msg.col})
                   </span>
                 )}
               </div>

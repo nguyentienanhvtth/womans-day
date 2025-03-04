@@ -1,58 +1,65 @@
-# TogetherWeRise - Dự án 8/3
+# TogetherWeRise - International Women's Day Project
 
-Một trang web tương tác thời gian thực cho ngày Quốc tế Phụ nữ, nơi mọi người có thể cùng nhau xây dựng một biểu tượng bằng cách thêm các khối màu và lời chúc.
+An interactive real-time web application for International Women's Day where people can collectively build a symbol by adding colored blocks with messages.
 
-## Tính năng
+## Features
 
-- Tương tác thời gian thực với Firebase Realtime Database
-- Giao diện người dùng đẹp mắt và thân thiện
-- Hiệu ứng animation mượt mà
-- Không cần backend riêng
+- Real-time interaction using Supabase Realtime
+- Beautiful and user-friendly interface
+- Smooth animations and transitions
+- Serverless architecture
+- Responsive design for all devices
 
-## Yêu cầu
+## Requirements
 
 - Node.js 18+
-- Tài khoản Firebase (miễn phí)
+- Free Supabase account
 
-## Cài đặt
+## Installation
 
-1. Clone repository:
+1. Clone the repository:
 ```bash
 git clone <repository-url>
 cd womans-day
 ```
 
-2. Cài đặt dependencies:
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Tạo project trên Firebase:
-   - Truy cập https://console.firebase.google.com/
-   - Tạo project mới
-   - Trong project settings, tìm config và tạo file `.env.local` với nội dung:
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=your_database_url
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+3. Set up your Supabase project:
+- Create a new project on Supabase
+- Copy your project URL and anon key
+- Create a `.env.local` file with your Supabase credentials:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-4. Khởi chạy ứng dụng:
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-Truy cập http://localhost:3000 để xem ứng dụng.
+Visit http://localhost:3000 to view the application.
 
-## Deploy
+## Deployment
 
-Dự án này có thể được deploy lên Vercel với một vài bước đơn giản:
+This project can be easily deployed to Vercel:
 
-1. Push code lên GitHub
-2. Kết nối repository với Vercel
-3. Thêm các biến môi trường Firebase trong Vercel
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add your Supabase environment variables in Vercel
 4. Deploy!
+
+## Tech Stack
+
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- Supabase (Database & Real-time)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.

@@ -10,15 +10,32 @@ interface AddMessageFormProps {
   onSubmit: (message: Message) => void;
   position: { row: number; col: number };
   onCancel: () => void;
+  existingMessage?: {
+    content: string;
+    color: string;
+    author: string;
+  };
 }
 
-function AddMessageForm({ onSubmit, position, onCancel }: AddMessageFormProps) {
-  const [message, setMessage] = useState('');
-  const [author, setAuthor] = useState('');
-  const [color, setColor] = useState('#ff69b4'); // Default pink color
+function AddMessageForm({ onSubmit, position, onCancel, existingMessage }: AddMessageFormProps) {
+  const [message, setMessage] = useState(existingMessage?.content || '');
+  const [author, setAuthor] = useState(existingMessage?.author || '');
+  const [color, setColor] = useState(existingMessage?.color || '#ff69b4');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // For editing, we only need color
+    if (existingMessage) {
+      onSubmit({
+        content: existingMessage.content,
+        author: existingMessage.author,
+        color,
+      });
+      return;
+    }
+
+    // For new messages, we need all fields
     if (!message || !author) return;
 
     onSubmit({
@@ -43,7 +60,7 @@ function AddMessageForm({ onSubmit, position, onCancel }: AddMessageFormProps) {
       >
         <div className="text-center mb-4">
           <p className="text-sm text-gray-600">
-            Thêm lời chúc tại vị trí ({position.row}, {position.col})
+            {existingMessage ? 'Edit message color' : 'Add a greeting'} at position ({position.row}, {position.col})
           </p>
         </div>
         <button
@@ -53,35 +70,39 @@ function AddMessageForm({ onSubmit, position, onCancel }: AddMessageFormProps) {
           ✕
         </button>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">
-              Tên của bạn
-            </label>
-            <input
-              type="text"
-              id="author"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              Lời chúc của bạn
-            </label>
-            <textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-              rows={3}
-              required
-            />
-          </div>
+          {!existingMessage && (
+            <>
+              <div>
+                <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">
+                  Your name
+                </label>
+                <input
+                  type="text"
+                  id="author"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                  Your greeting
+                </label>
+                <textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  rows={3}
+                  required
+                />
+              </div>
+            </>
+          )}
           <div>
             <label htmlFor="color" className="block text-sm font-medium text-gray-700 mb-1">
-              Chọn màu
+              Choose color
             </label>
             <input
               type="color"
@@ -96,14 +117,14 @@ function AddMessageForm({ onSubmit, position, onCancel }: AddMessageFormProps) {
               type="submit"
               className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-sm"
             >
-              Gửi lời chúc
+              {existingMessage ? 'Update color' : 'Send greeting'}
             </button>
             <button
               type="button"
               onClick={onCancel}
               className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors text-sm"
             >
-              Hủy
+              Cancel
             </button>
           </div>
         </form>
