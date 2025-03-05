@@ -197,16 +197,41 @@ export default function Home() {
             <div className="text-center mb-4 text-sm text-gray-600">
               Click empty blocks to add messages • Click existing blocks to edit • Hover to view content
             </div>
-            <div className="relative w-full bg-white/50 backdrop-blur-sm rounded-lg shadow-lg mb-8 overflow-hidden p-2">
-              <div 
-                className="grid gap-[1px]"
-                style={{
-                  gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
-                  gridTemplateRows: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
-                  aspectRatio: '1',
-                }}
-              >
-                {grid}
+            
+            <div className="relative">
+              {/* X-axis coordinates (top) */}
+              <div className="absolute -top-3 left-2 right-0 flex w-full justify-between px-2">
+                {Array.from({ length: GRID_SIZE }, (_, i) => (
+                  <div key={`x-${i}`} className="flex-1 text-[8px] text-gray-400 text-center">
+                    {i}
+                  </div>
+                ))}
+              </div>
+
+              {/* Y-axis coordinates (left) */}
+              <div className="absolute -left-3 top-0 bottom-0 flex flex-col justify-between py-3">
+                {Array.from({ length: GRID_SIZE }, (_, i) => (
+                  <div 
+                    key={`y-${i}`} 
+                    className="text-[8px] text-gray-400"
+                  >
+                    {i}
+                  </div>
+                ))}
+              </div>
+
+              {/* Grid container */}
+              <div className="relative w-full bg-white/50 backdrop-blur-sm rounded-lg shadow-lg mb-8 overflow-hidden p-2 ml-2">
+                <div 
+                  className="grid gap-[1px]"
+                  style={{
+                    gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
+                    gridTemplateRows: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
+                    aspectRatio: '1',
+                  }}
+                >
+                  {grid}
+                </div>
               </div>
             </div>
           </div>

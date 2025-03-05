@@ -8,7 +8,7 @@ interface MessageBlockProps {
     color: string;
     author: string;
   };
-  position?: {
+  position: {
     row: number;
     col: number;
   };
@@ -22,7 +22,6 @@ export default memo(function MessageBlock({ message, position, onClick }: Messag
   // Calculate tooltip position
   const getTooltipPosition = () => {
     if (!position) return {};
-    
     const GRID_SIZE = 50; // Match the grid size from page.tsx
     const isLeftEdge = position.col < 5;
     const isRightEdge = position.col > GRID_SIZE - 5;
@@ -65,7 +64,7 @@ export default memo(function MessageBlock({ message, position, onClick }: Messag
       onClick={onClick}
     >
       <div
-        className={`w-full h-full transition-all ${
+        className={`w-full h-full transition-colors ${
           message
             ? "cursor-pointer hover:opacity-75 hover:ring-2 hover:ring-purple-400"
             : "cursor-pointer hover:bg-purple-100 hover:border-1 hover:border-purple-600"
@@ -79,10 +78,18 @@ export default memo(function MessageBlock({ message, position, onClick }: Messag
       {/* Tooltip for displaying message content */}
       {message && showTooltip && (
         <div className={`${tooltipClassName} bg-white rounded-lg shadow-lg text-sm sm:text-base`}>
-          <div className="font-semibold text-purple-600 mb-1">
-            {message.author}
+          <div className="flex justify-between items-start mb-1">
+            <div className="font-semibold text-purple-600 text-sm">
+              {message.author}
+            </div>
+            <div className="text-[8px] text-gray-400">
+              ({position.row}, {position.col})
+            </div>
           </div>
-          <div className="text-gray-700" style={{ color: message.color }}>
+          <div 
+            className="text-gray-700 text-sm"
+            style={{ color: message.color }}
+          >
             {message.content}
           </div>
           <div className={arrowClassName} />
