@@ -25,6 +25,7 @@ const ChatForm = dynamic(() => Promise.resolve(({
       placeholder="Enter your name"
       value={author}
       onChange={(e) => setAuthor(e.target.value)}
+      maxLength={50}
       className="w-full text-black mb-2 px-2 sm:px-3 py-2 border rounded text-sm sm:text-base"
       required
     />
@@ -34,6 +35,7 @@ const ChatForm = dynamic(() => Promise.resolve(({
         placeholder="Type your message..."
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
+        maxLength={250}
         className="flex-1 text-black px-2 sm:px-3 py-2 border rounded text-sm sm:text-base"
         required
       />
@@ -75,8 +77,11 @@ export default function ChatBox() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (typeof window !== 'undefined' && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ 
+        behavior: "smooth",
+        block: "end"
+      });
     }
   }, []);
 
@@ -112,7 +117,7 @@ export default function ChatBox() {
         return;
       }
 
-      // Combine and sort messages by creation time
+      // Combine and sort messages by creation time (old to new)
       const combinedMessages: CombinedMessage[] = [
         ...(chatData?.map(chat => ({
           ...chat,
@@ -127,7 +132,9 @@ export default function ChatBox() {
       );
 
       setMessages(combinedMessages);
-      scrollToBottom();
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
     };
 
     fetchAllMessages();
@@ -217,28 +224,50 @@ export default function ChatBox() {
       <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
         {messages.map((msg) => {
           const isGrid = msg.type === 'grid';
+          const content = isGrid ? msg.content : msg.message;
+          
           return (
             <div 
               key={msg.id} 
               className={`rounded-lg p-2 sm:p-3 ${
                 isGrid ? 'bg-purple-50' : 'bg-gray-50'
-              }`}
+              } relative group`}
             >
-              <div className="font-semibold text-purple-600 text-sm sm:text-base">
-                {msg.author}
+              <div className="font-semibold text-purple-600 text-sm sm:text-base flex items-baseline gap-2">
+                {/* Author name with truncate and tooltip */}
+                <div className="relative group/name">
+                  <div className="truncate max-w-[200px]">
+                    {msg.author}
+                  </div>
+                  {msg.author.length > 20 && (
+                    <div className="hidden group-hover/name:block absolute z-20 bg-white shadow-lg border p-2 rounded text-sm -top-2 left-0 transform -translate-y-full whitespace-normal max-w-xs">
+                      {msg.author}
+                    </div>
+                  )}
+                </div>
                 {isGrid && (
-                  <span className="text-xs sm:text-sm text-purple-400 ml-2">
+                  <span className="text-xs sm:text-sm text-purple-400 shrink-0">
                     sent a greeting at ({msg.row}, {msg.col})
                   </span>
                 )}
               </div>
-              <div 
-                className="text-gray-700 text-sm sm:text-base"
-                style={isGrid ? { color: msg.color } : undefined}
-              >
-                {isGrid ? msg.content : msg.message}
+
+              {/* Message content with line clamp and tooltip */}
+              <div className="relative group/content">
+                <div 
+                  className="text-gray-700 text-sm sm:text-base line-clamp-5 mt-1"
+                  style={isGrid ? { color: msg.color } : undefined}
+                >
+                  {content}
+                </div>
+                {content.split('\n').length > 5 || content.length > 100 && (
+                  <div className="hidden group-hover/content:block absolute z-20 bg-white shadow-lg border p-2 rounded text-sm left-0 transform translate-y-1 whitespace-pre-wrap max-w-md">
+                    {content}
+                  </div>
+                )}
               </div>
-              <div className="text-xs text-gray-400">
+
+              <div className="text-xs text-gray-400 mt-1">
                 {formatTime(msg.created_at)}
               </div>
             </div>
